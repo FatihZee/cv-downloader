@@ -4,8 +4,18 @@ export default async function handler(req, res) {
     // Folder ID dari Google Drive kamu
     const folderId = '13ZCeT0_FqYBARL5j_WYQhl3MJfqhqLx9';
     
-    // Google Drive API URL untuk ambil file list
-    const apiUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&fields=files(id,name)`;
+    // Google API Key (environment variable)
+    const apiKey = process.env.GOOGLE_API_KEY;
+    
+    if (!apiKey) {
+      return res.status(500).json({
+        error: 'Configuration error',
+        message: 'Google API Key not configured'
+      });
+    }
+    
+    // Google Drive API URL dengan API Key
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&fields=files(id,name)&key=${apiKey}`;
     
     const response = await fetch(apiUrl);
     const data = await response.json();
